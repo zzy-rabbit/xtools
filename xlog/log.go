@@ -23,7 +23,7 @@ type service struct {
 	core   *lumberjack.Logger
 }
 
-var defaultLogger ILog
+var defaultLogger ILogger
 
 func init() {
 	ctx := xcontext.Background()
@@ -34,11 +34,11 @@ func init() {
 	defaultLogger = logger
 }
 
-func GetDefaultLogger(ctx context.Context) ILog {
+func GetDefaultLogger(ctx context.Context) ILogger {
 	return defaultLogger
 }
 
-func New(ctx context.Context, config Config) (ILog, error) {
+func New(ctx context.Context, config Config) (ILogger, error) {
 	s := &service{config: config}
 	setDefault(ctx, &s.config)
 

@@ -10,7 +10,7 @@ type Config struct {
 	MaxSize int    `json:"max_size"`
 }
 
-type ILog interface {
+type ILogger interface {
 	SetLevel(ctx context.Context, level int)
 	SetSkip(ctx context.Context, skip int)
 	Debug(ctx context.Context, format string, v ...any)
