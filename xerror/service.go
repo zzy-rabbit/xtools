@@ -9,25 +9,25 @@ type IError interface {
 }
 
 type err struct {
-	code    int
-	message string
+	ErrCode    int    `json:"code"`
+	ErrMessage string `json:"message"`
 }
 
 func New(code int, message string) IError {
 	return &err{
-		code:    code,
-		message: message,
+		ErrCode:    code,
+		ErrMessage: message,
 	}
 }
 
 func (e *err) Code() int {
-	return e.code
+	return e.ErrCode
 }
 
 func (e *err) Message() string {
-	return e.message
+	return e.ErrMessage
 }
 
 func (e *err) Error() string {
-	return fmt.Sprintf("%d: %s", e.code, e.message)
+	return fmt.Sprintf("%d: %s", e.ErrCode, e.ErrMessage)
 }
