@@ -3,6 +3,7 @@ package xplugin
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/zzy-rabbit/xtools/xerror"
 )
 
@@ -44,6 +45,7 @@ func Register(ctx context.Context, plugin IPlugin) xerror.IError {
 		return err
 	}
 	instance.Save(ctx, plugin)
+	fmt.Println("register plugin: ", plugin.GetName(ctx))
 	return nil
 }
 
