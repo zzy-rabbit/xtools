@@ -35,3 +35,12 @@ func (e *err) Error() string {
 func Extend(err IError, message string) IError {
 	return New(err.Code(), err.Message()+": "+message)
 }
+
+func (e *err) Success(expects ...IError) bool {
+	for _, expect := range expects {
+		if e.Code() == expect.Code() {
+			return true
+		}
+	}
+	return e.Code() == ErrSuccess.Code()
+}
