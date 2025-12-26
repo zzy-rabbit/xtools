@@ -45,7 +45,7 @@ func New(ctx context.Context, config Config) (ILogger, xerror.IError) {
 
 	if err := os.MkdirAll(s.config.Path, os.ModePerm); err != nil {
 		fmt.Printf("mkdir %s fail %v\n", s.config.Path, err)
-		return nil, xerror.Extend(xerror.ErrFileOperatFail, err.Error())
+		return nil, xerror.Extend(xerror.ErrFileOperationFail, err.Error())
 	}
 
 	s.core = &lumberjack.Logger{
