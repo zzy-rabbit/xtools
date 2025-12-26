@@ -31,3 +31,7 @@ func (e *err) Message() string {
 func (e *err) Error() string {
 	return fmt.Sprintf("%d: %s", e.ErrCode, e.ErrMessage)
 }
+
+func Extend(err IError, message string) IError {
+	return New(err.Code(), err.Message()+": "+message)
+}
