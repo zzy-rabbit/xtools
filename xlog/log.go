@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/zzy-rabbit/xtools/xcontext"
+	"github.com/zzy-rabbit/xtools/xerror"
 	"github.com/zzy-rabbit/xtools/xruntime"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
@@ -38,13 +39,13 @@ func GetDefaultLogger(ctx context.Context) ILogger {
 	return defaultLogger
 }
 
-func New(ctx context.Context, config Config) (ILogger, error) {
+func New(ctx context.Context, config Config) (ILogger, xerror.IError) {
 	s := &service{config: config}
 	setDefault(ctx, &s.config)
 
 	if err := os.MkdirAll(s.config.Path, os.ModePerm); err != nil {
 		fmt.Printf("mkdir %s fail %v\n", s.config.Path, err)
-		return nil, err
+		return nil, xerror.Extend(xerror.ErrFileOperatFail, err.Error())
 	}
 
 	s.core = &lumberjack.Logger{

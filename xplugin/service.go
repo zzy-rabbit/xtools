@@ -2,7 +2,7 @@ package xplugin
 
 import (
 	"context"
-	"fmt"
+	"github.com/zzy-rabbit/xtools/xerror"
 	"reflect"
 	"sync"
 )
@@ -30,13 +30,13 @@ func (s *service) Get(ctx context.Context, name string) (IPlugin, bool) {
 	return plugin, ok
 }
 
-func (s *service) Inject(ctx context.Context, target any) error {
+func (s *service) Inject(ctx context.Context, target any) xerror.IError {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
 
 	v := reflect.ValueOf(target)
 	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {
-		return fmt.Errorf("target must be a pointer to struct")
+		return xerror.Extend(xerror.ErrInvalidParam, "target must be a pointer to struct")
 	}
 
 	v = v.Elem()
@@ -58,14 +58,14 @@ func (s *service) Inject(ctx context.Context, target any) error {
 
 		plugin, ok := s.pluginMap[pluginName]
 		if !ok {
-			return fmt.Errorf("plugin %q not found for field %s", pluginName, fieldType.Name)
+			continue
 		}
 
 		pluginValue := reflect.ValueOf(plugin)
 
 		// 类型校验
 		if !pluginValue.Type().AssignableTo(fieldValue.Type()) {
-			return fmt.Errorf("plugin %s type %s cannot be assigned to field %s (%s)", pluginName, pluginValue.Type(), fieldType.Name, fieldValue.Type())
+			continue
 		}
 
 		fieldValue.Set(pluginValue)

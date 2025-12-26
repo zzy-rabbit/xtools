@@ -3,6 +3,7 @@ package xplugin
 import (
 	"context"
 	"encoding/json"
+	"github.com/zzy-rabbit/xtools/xerror"
 )
 
 const TagName = "xplugin"
@@ -25,19 +26,19 @@ type IPlugin interface {
 	Stop(ctx context.Context, stopParam string) error
 }
 
-func ParseConfig(ctx context.Context, content []byte) error {
+func ParseConfig(ctx context.Context, content []byte) xerror.IError {
 	err := json.Unmarshal(content, &instance.config)
 	if err != nil {
-		return err
+		return xerror.Extend(xerror.ErrInvalidParam, err.Error())
 	}
 	return nil
 }
 
-func Inject(ctx context.Context, obj any) error {
+func Inject(ctx context.Context, obj any) xerror.IError {
 	return instance.Inject(ctx, obj)
 }
 
-func Register(ctx context.Context, plugin IPlugin) error {
+func Register(ctx context.Context, plugin IPlugin) xerror.IError {
 	err := instance.Inject(ctx, plugin)
 	if err != nil {
 		return err
@@ -46,7 +47,7 @@ func Register(ctx context.Context, plugin IPlugin) error {
 	return nil
 }
 
-func Init(ctx context.Context) error {
+func Init(ctx context.Context) xerror.IError {
 	for _, obj := range instance.config.Plugins {
 		plugin, ok := instance.Get(ctx, obj.PluginName)
 		if !ok {
@@ -64,7 +65,7 @@ func Get(ctx context.Context, name string) (IPlugin, bool) {
 	return instance.Get(ctx, name)
 }
 
-func Run(ctx context.Context) error {
+func Run(ctx context.Context) xerror.IError {
 	for _, obj := range instance.config.Plugins {
 		plugin, ok := instance.Get(ctx, obj.PluginName)
 		if !ok {
@@ -78,7 +79,7 @@ func Run(ctx context.Context) error {
 	return nil
 }
 
-func Stop(ctx context.Context) error {
+func Stop(ctx context.Context) xerror.IError {
 	for _, obj := range instance.config.Plugins {
 		plugin, ok := instance.Get(ctx, obj.PluginName)
 		if !ok {

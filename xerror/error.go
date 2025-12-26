@@ -16,4 +16,5 @@ var (
 	ErrInternalError      = New(defaultSection+8, "internal error")
 	ErrNotImplemented     = New(defaultSection+9, "not implemented")
 	ErrNotSupported       = New(defaultSection+10, "not supported")
+	ErrFileOperatFail     = New(defaultSection+11, "file operation fail")
 )
