@@ -6,6 +6,7 @@ type IError interface {
 	Code() int
 	Message() string
 	Error() string
+	Success(expects ...IError) bool
 }
 
 type err struct {
