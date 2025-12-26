@@ -1,6 +1,9 @@
 package xerror
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type IError interface {
 	Code() int
@@ -36,14 +39,22 @@ func Extend(err IError, message string) IError {
 	return New(err.Code(), err.Message()+": "+message)
 }
 
-func Error(err IError, expects ...IError) bool {
+func Error(err error, expects ...IError) bool {
 	if err == nil {
 		return false
 	}
+	var xerr IError
+	ok := errors.As(err, &xerr)
+	if !ok {
+		return false
+	}
+	if xerr == nil {
+		return false
+	}
 	for _, expect := range expects {
-		if err.Code() == expect.Code() {
-			return true
+		if xerr.Code() == expect.Code() {
+			return false
 		}
 	}
-	return err.Code() == ErrSuccess.Code()
+	return xerr.Code() != ErrSuccess.Code()
 }
