@@ -32,6 +32,7 @@ func ParseConfig(ctx context.Context, content []byte) xerror.IError {
 	if err != nil {
 		return xerror.Extend(xerror.ErrInvalidParam, err.Error())
 	}
+	fmt.Println("config: ", instance.config)
 	return nil
 }
 
@@ -59,6 +60,7 @@ func Init(ctx context.Context) xerror.IError {
 		if err != nil {
 			continue
 		}
+		fmt.Println("init plugin: ", plugin.GetName(ctx))
 	}
 	return nil
 }
@@ -77,6 +79,7 @@ func Run(ctx context.Context) xerror.IError {
 		if err != nil {
 			continue
 		}
+		fmt.Println("run plugin: ", plugin.GetName(ctx))
 	}
 	return nil
 }
@@ -91,6 +94,7 @@ func Stop(ctx context.Context) xerror.IError {
 		if err != nil {
 			continue
 		}
+		fmt.Println("stop plugin: ", plugin.GetName(ctx))
 	}
 	return nil
 }
