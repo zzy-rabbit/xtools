@@ -6,7 +6,6 @@ type IError interface {
 	Code() int
 	Message() string
 	Error() string
-	Success(expects ...IError) bool
 }
 
 type err struct {
@@ -37,11 +36,14 @@ func Extend(err IError, message string) IError {
 	return New(err.Code(), err.Message()+": "+message)
 }
 
-func (e *err) Success(expects ...IError) bool {
+func Error(err IError, expects ...IError) bool {
+	if err == nil {
+		return false
+	}
 	for _, expect := range expects {
-		if e.Code() == expect.Code() {
+		if err.Code() == expect.Code() {
 			return true
 		}
 	}
-	return e.Code() == ErrSuccess.Code()
+	return err.Code() == ErrSuccess.Code()
 }
