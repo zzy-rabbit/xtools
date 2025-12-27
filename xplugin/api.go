@@ -40,26 +40,19 @@ func Inject(ctx context.Context, obj any) xerror.IError {
 }
 
 func Register(ctx context.Context, plugin IPlugin) xerror.IError {
-	// 当前插件对象的引用
-	err := instance.Inject(ctx, plugin)
-	if err != nil {
-		return err
-	}
-	// 其他已注册的插件，防止存在对当前对象的引用
-	for _, obj := range instance.pluginMap {
-		err = instance.Inject(ctx, obj)
-		if err != nil {
-			continue
-		}
-	}
-
 	instance.Save(ctx, plugin)
-	fmt.Printf("register plugin: %s %+v\n", plugin.GetName(ctx), plugin)
+	fmt.Println("register plugin: ", plugin.GetName(ctx))
 	return nil
 }
 
 func Init(ctx context.Context) xerror.IError {
 	for _, obj := range instance.config.Plugins {
+		// 插件对象的引用
+		xerr := instance.Inject(ctx, obj)
+		if xerror.Error(xerr) {
+			return xerr
+		}
+
 		plugin, ok := instance.Get(ctx, obj.PluginName)
 		if !ok {
 			continue
