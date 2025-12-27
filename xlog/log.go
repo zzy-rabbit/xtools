@@ -24,18 +24,22 @@ type service struct {
 	core   *lumberjack.Logger
 }
 
+var defaultConfig Config
 var defaultLogger ILogger
+var defaultOnce sync.Once
 
-func init() {
-	ctx := xcontext.Background()
-	logger, err := New(ctx, Config{})
-	if err != nil {
-		panic("init log fail " + err.Error())
-	}
-	defaultLogger = logger
+func SetDefaultLoggerConfig(ctx context.Context, config Config) {
+	defaultConfig = config
 }
 
 func GetDefaultLogger(ctx context.Context) ILogger {
+	defaultOnce.Do(func() {
+		logger, err := New(ctx, defaultConfig)
+		if err != nil {
+			panic("init log fail " + err.Error())
+		}
+		defaultLogger = logger
+	})
 	return defaultLogger
 }
 

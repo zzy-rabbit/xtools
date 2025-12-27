@@ -45,7 +45,7 @@ func Register(ctx context.Context, plugin IPlugin) xerror.IError {
 		return err
 	}
 	instance.Save(ctx, plugin)
-	fmt.Println("register plugin:", plugin.GetName(ctx))
+	fmt.Printf("register plugin: %s %+v", plugin.GetName(ctx), plugin)
 	return nil
 }
 
