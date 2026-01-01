@@ -17,4 +17,6 @@ var (
 	ErrNotImplemented     = New(defaultSection+9, "not implemented")
 	ErrNotSupported       = New(defaultSection+10, "not supported")
 	ErrFileOperationFail  = New(defaultSection+11, "file operation fail")
+	ErrThreadPoolExited   = New(defaultSection+12, "thread pool exited")
+	ErrTaskQueueFull      = New(defaultSection+13, "task queue full")
 )
