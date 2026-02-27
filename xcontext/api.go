@@ -2,6 +2,7 @@ package xcontext
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -24,6 +25,8 @@ func Background() context.Context {
 	ctx := context.Background()
 	ctx = WithStartTime(ctx, time.Now())
 	ctx = WithTrace(ctx, uuid.New().String())
+	fmt.Println(GetTrace(ctx))
+	fmt.Println(Since(ctx))
 	return ctx
 }
 
