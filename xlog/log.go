@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime/debug"
-	"strconv"
 	"sync"
 )
 
@@ -86,9 +85,8 @@ func (s *service) Printf(ctx context.Context, level int, format string, v ...any
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
 	if s.level <= level {
-		funcName, line := xruntime.GetShortFuncName(ctx, s.skip+2)
-		s.logger.Printf("<"+funcName+":"+strconv.Itoa(line)+"> ["+levelDescMap[level]+"] trace: "+
-			xcontext.GetTrace(ctx)+" "+format+"\n", v...)
+		funcName, _ := xruntime.GetShortFuncName(ctx, s.skip+2)
+		_ = s.logger.Output(s.skip+2, fmt.Sprintf("<"+funcName+"> ["+levelDescMap[level]+"] trace: "+xcontext.GetTrace(ctx)+" "+format+"\n", v...))
 	}
 }
 
