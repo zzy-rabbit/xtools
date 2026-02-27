@@ -55,12 +55,12 @@ func New(ctx context.Context, config Config) (ILogger, xerror.IError) {
 	s.core = &lumberjack.Logger{
 		Filename:   filepath.Join(s.config.Path, s.config.Name+s.config.Suffix),
 		MaxSize:    s.config.MaxSize,
-		MaxAge:     7,
+		MaxAge:     30,
 		MaxBackups: 0,
 		LocalTime:  false,
 		Compress:   true,
 	}
-	s.logger = log.New(s.core, "", log.LstdFlags|log.Lmicroseconds)
+	s.logger = log.New(s.core, "", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 	return s, nil
 }
 

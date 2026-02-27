@@ -9,13 +9,13 @@ import (
 
 func setDefault(ctx context.Context, config *Config) {
 	if config.Level == 0 {
-		config.Level = LevelDebug
+		config.Level = LevelInfo
 	}
 	if config.MaxSize == 0 {
 		config.MaxSize = 10
 	}
 	if config.Name == "" {
-		config.Name = "default"
+		config.Name = "app"
 	}
 	if config.Path == "" {
 		config.Path = filepath.Join(xexecutable.GetProcessAbsPath(), "log")
