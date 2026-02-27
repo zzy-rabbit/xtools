@@ -86,7 +86,7 @@ func (s *service) Printf(ctx context.Context, level int, format string, v ...any
 	defer s.mutex.RUnlock()
 	if s.level <= level {
 		funcName, _ := xruntime.GetShortFuncName(ctx, s.skip+2)
-		_ = s.logger.Output(s.skip+3, fmt.Sprintf("<"+funcName+"> ["+levelDescMap[level]+"] trace: "+xcontext.GetTrace(ctx)+" "+format+"\n", v...))
+		_ = s.logger.Output(s.skip+4, fmt.Sprintf("<"+funcName+"> ["+levelDescMap[level]+"] trace: "+xcontext.GetTrace(ctx)+" "+format+"\n", v...))
 	}
 }
 
