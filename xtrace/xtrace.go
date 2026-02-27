@@ -38,8 +38,8 @@ func Trace(ctx context.Context) func(args ...any) {
 		for i, v := range args {
 			// 获取字段值
 			fieldName := byte('a' + i)
-			fieldValue := fmt.Sprintf("%v", v)
-			paramStr += fmt.Sprintf(", %c:%v", fieldName, fieldValue)
+			fieldValue := fmt.Sprintf("%+v", v)
+			paramStr += fmt.Sprintf(", %c:%+v", fieldName, fieldValue)
 		}
 		cost := time.Since(startTime)
 		log.Info(ctx, "%s end cost:%v, %s\n", funcName, cost, paramStr)
