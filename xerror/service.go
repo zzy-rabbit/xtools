@@ -46,7 +46,7 @@ func Error(err error, expects ...IError) bool {
 	var xerr IError
 	ok := errors.As(err, &xerr)
 	if !ok {
-		return false
+		return true
 	}
 	if xerr == nil {
 		return false
