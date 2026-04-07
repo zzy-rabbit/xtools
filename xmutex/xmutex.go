@@ -7,9 +7,16 @@ import (
 )
 
 type XMutex struct {
-	mutex   sync.RWMutex
-	readers int
-	writers int
+	mutex     sync.RWMutex
+	readers   int
+	writers   int
+	onDeleted func()
+}
+
+func (m *XMutex) SetOnDeletedCallback(ctx context.Context, callback func()) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	m.onDeleted = callback
 }
 
 func (m *XMutex) Lock(ctx context.Context) {
@@ -34,6 +41,9 @@ func (m *XMutex) Unlock(ctx context.Context) {
 			return
 		}
 		m.writers--
+		if m.onDeleted != nil {
+			m.onDeleted()
+		}
 		m.mutex.Unlock()
 		return
 	}
@@ -61,6 +71,9 @@ func (m *XMutex) RUnlock(ctx context.Context) {
 			return
 		}
 		m.readers--
+		if m.onDeleted != nil {
+			m.onDeleted()
+		}
 		m.mutex.Unlock()
 		return
 	}
