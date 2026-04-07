@@ -1,92 +1,41 @@
 package xmutex
 
 import (
-	"context"
 	"sync"
-	"time"
+	"sync/atomic"
 )
 
 type XMutex struct {
-	mutex     sync.RWMutex
-	readers   int
-	writers   int
-	onDeleted func()
+	mu sync.RWMutex
+
+	readers int32 // 当前读锁数量
+	writer  int32 // 是否有写锁（0/1）
 }
 
-func (m *XMutex) SetOnDeletedCallback(ctx context.Context, callback func()) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
-	m.onDeleted = callback
+func (m *XMutex) RLock() {
+	m.mu.RLock()
+	atomic.AddInt32(&m.readers, 1)
 }
 
-func (m *XMutex) Lock(ctx context.Context) {
-	for {
-		m.mutex.Lock()
-		if m.readers > 0 || m.writers > 0 {
-			m.mutex.Unlock()
-			time.Sleep(time.Millisecond * 100)
-			continue
-		}
-		m.writers++
-		m.mutex.Unlock()
-		return
-	}
+func (m *XMutex) RUnlock() {
+	atomic.AddInt32(&m.readers, -1)
+	m.mu.RUnlock()
 }
 
-func (m *XMutex) Unlock(ctx context.Context) {
-	for {
-		m.mutex.Lock()
-		if m.writers <= 0 {
-			m.mutex.Unlock()
-			return
-		}
-		m.writers--
-		if m.onDeleted != nil {
-			m.onDeleted()
-		}
-		m.mutex.Unlock()
-		return
-	}
+func (m *XMutex) Lock() {
+	m.mu.Lock()
+	atomic.StoreInt32(&m.writer, 1)
 }
 
-func (m *XMutex) RLock(ctx context.Context) {
-	for {
-		m.mutex.Lock()
-		if m.writers > 0 {
-			m.mutex.Unlock()
-			time.Sleep(time.Millisecond * 100)
-			continue
-		}
-		m.readers++
-		m.mutex.Unlock()
-		return
-	}
+func (m *XMutex) Unlock() {
+	atomic.StoreInt32(&m.writer, 0)
+	m.mu.Unlock()
 }
 
-func (m *XMutex) RUnlock(ctx context.Context) {
-	for {
-		m.mutex.Lock()
-		if m.writers <= 0 {
-			m.mutex.Unlock()
-			return
-		}
-		m.readers--
-		if m.onDeleted != nil {
-			m.onDeleted()
-		}
-		m.mutex.Unlock()
-		return
-	}
+func (m *XMutex) Locked() bool {
+	return atomic.LoadInt32(&m.writer) == 1 || atomic.LoadInt32(&m.readers) > 0
 }
 
-func (m *XMutex) RLocked(ctx context.Context) bool {
-	m.mutex.RLock()
-	defer m.mutex.RUnlock()
-	return m.readers > 0
-}
-
-func (m *XMutex) Locked(ctx context.Context) bool {
-	m.mutex.RLock()
-	defer m.mutex.RUnlock()
-	return m.writers > 0 || m.readers > 0
+func (m *XMutex) RLocked() bool {
+	return atomic.LoadInt32(&m.readers) > 0
 }
