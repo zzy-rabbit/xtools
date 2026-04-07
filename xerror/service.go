@@ -35,8 +35,8 @@ func (e *err) Error() string {
 	return fmt.Sprintf("%d: %s", e.ErrCode, e.ErrMessage)
 }
 
-func Extend(err IError, message string) IError {
-	return New(err.Code(), err.Message()+": "+message)
+func Extend(err IError, format string, args ...any) IError {
+	return New(err.Code(), err.Message()+": "+fmt.Sprintf(format, args...))
 }
 
 func Error(err error, expects ...IError) bool {
