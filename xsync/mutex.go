@@ -1,4 +1,4 @@
-package xmutex
+package xsync
 
 import (
 	"context"
