@@ -22,9 +22,9 @@ type Config struct {
 
 type IPlugin interface {
 	GetName(ctx context.Context) string
-	Init(ctx context.Context, initParam string) error
-	Run(ctx context.Context, runParam string) error
-	Stop(ctx context.Context, stopParam string) error
+	Init(ctx context.Context, initParam string) xerror.IError
+	Run(ctx context.Context, runParam string) xerror.IError
+	Stop(ctx context.Context, stopParam string) xerror.IError
 }
 
 func ParseConfig(ctx context.Context, content []byte) xerror.IError {
