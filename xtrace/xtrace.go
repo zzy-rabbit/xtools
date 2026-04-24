@@ -42,6 +42,6 @@ func Trace(ctx context.Context) func(args ...any) {
 			paramStr += fmt.Sprintf(", %c:%+v", fieldName, fieldValue)
 		}
 		cost := time.Since(startTime)
-		log.Info(ctx, "%s end cost:%v, %s", funcName, cost, paramStr)
+		log.Info(ctx, "%s end cost:%v %s", funcName, cost, paramStr)
 	}
 }
