@@ -29,7 +29,7 @@ func GetFileSize(ctx context.Context, file string) (int64, error) {
 	return stat.Size(), nil
 }
 
-func Zip(zipPath string, paths []string) error {
+func Zip(ctx context.Context, zipPath string, paths []string) error {
 	zipFile, err := os.Create(zipPath)
 	if err != nil {
 		return err
@@ -95,7 +95,7 @@ func Zip(zipPath string, paths []string) error {
 	return nil
 }
 
-func Unzip(zipPath, destDir string) error {
+func Unzip(ctx context.Context, zipPath, destDir string) error {
 	r, err := zip.OpenReader(zipPath)
 	if err != nil {
 		return err
