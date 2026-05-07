@@ -32,7 +32,6 @@ func Trace(ctx context.Context) func(args ...any) {
 		}
 	}
 
-	log.Info(ctx, "%s start", funcName)
 	return func(args ...interface{}) {
 		paramStr := ""
 		for i, v := range args {
